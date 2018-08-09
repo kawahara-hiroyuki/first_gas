@@ -4,6 +4,7 @@
 キー入力項目をどうやって作ろうかな？
 リファクタリング（大事）
 date欲しくなった
+グラフに落とすために、いらない数値もあったなぁ
 */
 
 
@@ -47,18 +48,87 @@ function setSheetData(ss, key) {
 function setGAData(currentSheet, ss, reportName, reportMetrics, key) {
   var metrics = reportMetrics[1].split(/\r\n|\r|\n/);        
   var dataRange = getDataRange(ss, reportName[1]);
-
+  
   var queryArr = [];
+  var aveQuery = [];
+  var dataQuery = [];
   for(var i = 0; i < metrics.length; i++) {
     // 空行チェック
     if(metrics[i] == "") continue;
     
-    queryArr = getQueryArr(key, dataRange, reportName.length ,i);
-    setQuery(currentSheet, queryArr, reportMetrics, i);
+//    旧バージョン。よしなにしてくれるセット
+//    queryArr = getQueryArr(key, dataRange, reportName.length ,i);
+//    setQuery(currentSheet, queryArr, reportMetrics, i);
+
+    // 新バージョン。　平均！シート名！データ！って感じにしてくれる
+    aveQuery =  getAveQuery (key, dataRange, reportName.length ,i);
+    setAveQuery(currentSheet, aveQuery, reportMetrics, i)
+    
+    dataQuery = getDataQuery(key, dataRange, reportName.length ,i)
+    setDataQuery(currentSheet, dataQuery, reportMetrics, i);
+        
   } 
 }
 
+function getAveQuery(key, dataRange, sheetLength, times) {
+  var result = [];
+  var string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var sheetRow = '';
+  var dataRow = '';
+  var query = '';
 
+  // 平均値を出すようのクエリを追加
+  // =IMPORTRANGE("1UnoTHCWHHoPW_5Ryy8Jbxo0uW-TP6Cnwz8NiLJQCaog", B2&"!G12:G12")を作成し、resultへpushする
+  for (var i = 0; i < sheetLength; i++) {
+    sheetRow = string.slice(i, i + 1);
+    dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
+    query = '=IMPORTRANGE("' + key + '", ' + sheetRow +'2&"!' + dataRow + (dataRange[0] + 1) + ':' + dataRow + (dataRange[0] + 1) + '")';
+    result.push(query);
+  }
+  
+  return result;
+}
+
+function setAveQuery(currentSheet, queryArr, reportMetrics, times) {
+  var metrics = reportMetrics[1].split(/\r\n|\r|\n/);
+
+  var setQueryArr = [];
+  setQueryArr.push(queryArr);
+
+  currentSheet.getSheetByName(metrics[times]).getRange(1, 1, 1, queryArr.length).setValues(setQueryArr);
+}
+
+function getDataQuery(key, dataRange, sheetLength, times) {
+  var result = [];
+  var string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var sheetRow = '';
+  var dataRow = '';
+  var query = '';
+
+  // 平均値を出すようのクエリを追加
+  // =IMPORTRANGE("1UnoTHCWHHoPW_5Ryy8Jbxo0uW-TP6Cnwz8NiLJQCaog", B2&"!G12:G12")を作成し、resultへpushする
+  for (var i = 0; i < sheetLength; i++) {
+    sheetRow = string.slice(i, i + 1);
+    dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
+    query = '=IMPORTRANGE("' + key + '", ' + sheetRow +'2&"!' + dataRow + (dataRange[0] + 5) + ':' + dataRow + (dataRange[0] + dataRange[2] + 5) + '")';
+    result.push(query);
+  }
+  
+  return result;
+}
+
+function setDataQuery(currentSheet, queryArr, reportMetrics, times) {
+  var metrics = reportMetrics[1].split(/\r\n|\r|\n/);
+
+  var setQueryArr = [];
+  setQueryArr.push(queryArr);
+
+  currentSheet.getSheetByName(metrics[times]).getRange(3, 1, 1, queryArr.length).setValues(setQueryArr);
+}
+
+
+/*
+// 旧バージョンなので一旦コメントアウト
 function setQuery(currentSheet, queryArr, reportMetrics, times) {
   var metrics = reportMetrics[1].split(/\r\n|\r|\n/);
 
@@ -68,7 +138,7 @@ function setQuery(currentSheet, queryArr, reportMetrics, times) {
   currentSheet.getSheetByName(metrics[times]).getRange(2, 1, 1, queryArr.length).setValues(setQueryArr);
 }
 
-
+// 旧バージョンなので一旦コメントアウト
 function getQueryArr(key, dataRange, sheetLength, times) {
   var result = [];
   var string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -78,7 +148,7 @@ function getQueryArr(key, dataRange, sheetLength, times) {
 
   // sheetLength = 25;
 
-  // =IMPORTRANGE("1_xTo2_DikUJJuJdVmZGEwEmA9YavJih_SXtOJi-B2dQ",G2 & "!C16:C27") を作成し、resultへpushする
+  // =IMPORTRANGE("1_xTo2_DikUJJuJdVmZGEwEmA9YavJih_SXtOJi-B2dQ",A1 & "!C16:C27") を作成し、resultへpushする
   for (var i = 0; i < sheetLength; i++) {
     sheetRow = string.slice(i, i + 1);
     dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
@@ -88,7 +158,7 @@ function getQueryArr(key, dataRange, sheetLength, times) {
   
   return result;
 }
-
+*/
 
 // GAによって出力されてdataRangeを取得する。
 // 配列→スプレッドシート　への置換のためにスクリプトがちょっと汚い。
@@ -124,13 +194,15 @@ function setHeader(currentSheet, reportNames, reportMetrics) {
   reportNames.shift();
   var setArr = [];
   setArr.push(reportNames);
-  var ss
+  var range;
 
   for (var i = 0; i < metrics.length; i++) {
     // 空行チェック
     if(metrics[i] == "") continue;
-
-    currentSheet.getSheetByName(metrics[i]).getRange(1,1,1,reportNames.length).setValues(setArr);  
+    
+    range = currentSheet.getSheetByName(metrics[i]).getRange(2, 1, 1, reportNames.length);
+    range.setValues(setArr);  
+    range.setBackground("#d9d9d9");    
   }
 }
 
@@ -177,7 +249,9 @@ function wmap_getSheetsName(){
 }
 
 
+// 未完成
 // 27→AAに置換
+// 一旦放置　やっぱうまいごと思いつかないorz　人に頼ってもいいやもう。
 function replaceNumToString() {
   var num = 677;
   var string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
