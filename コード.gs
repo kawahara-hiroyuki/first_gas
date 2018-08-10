@@ -4,7 +4,6 @@
 キー入力項目をどうやって作ろうかな？
 リファクタリング（大事）
 date欲しくなった
-グラフに落とすために、いらない数値もあったなぁ
 */
 
 
@@ -12,7 +11,7 @@ date欲しくなった
 function main() {
   // GAの結果が詰まってるスプレッドシートのキーを入力させる
   // var key = getSpreadSheetKey();
-  var key = "1UnoTHCWHHoPW_5Ryy8Jbxo0uW-TP6Cnwz8NiLJQCaog"; // 仮置き
+  var key = "1-J3Z************************************"; // 仮置き
 
   // シートの情報取ってくる系
   try{
@@ -78,7 +77,7 @@ function getAveQuery(key, dataRange, sheetLength, times) {
   var query = '';
 
   // 平均値を出すようのクエリを追加
-  // =IMPORTRANGE("1UnoTHCWHHoPW_5Ryy8Jbxo0uW-TP6Cnwz8NiLJQCaog", B2&"!G12:G12")を作成し、resultへpushする
+  // =IMPORTRANGE("**************************************og", B2&"!G12:G12")を作成し、resultへpushする
   for (var i = 0; i < sheetLength; i++) {
     sheetRow = string.slice(i, i + 1);
     dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
@@ -106,7 +105,7 @@ function getDataQuery(key, dataRange, sheetLength, times) {
   var query = '';
 
   // 平均値を出すようのクエリを追加
-  // =IMPORTRANGE("1UnoTHCWHHoPW_5Ryy8Jbxo0uW-TP6Cnwz8NiLJQCaog", B2&"!G12:G12")を作成し、resultへpushする
+  // =IMPORTRANGE("1Un*****************************************", B2&"!G12:G12")を作成し、resultへpushする
   for (var i = 0; i < sheetLength; i++) {
     sheetRow = string.slice(i, i + 1);
     dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
@@ -148,7 +147,7 @@ function getQueryArr(key, dataRange, sheetLength, times) {
 
   // sheetLength = 25;
 
-  // =IMPORTRANGE("1_xTo2_DikUJJuJdVmZGEwEmA9YavJih_SXtOJi-B2dQ",A1 & "!C16:C27") を作成し、resultへpushする
+  // =IMPORTRANGE("1_xTo2_*******************************",A1 & "!C16:C27") を作成し、resultへpushする
   for (var i = 0; i < sheetLength; i++) {
     sheetRow = string.slice(i, i + 1);
     dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
