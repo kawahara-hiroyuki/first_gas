@@ -1,17 +1,14 @@
 /*
 残タスク
-列数が26以上 A, B, ~ Z ,AAの場合の処理追加
+列数が26以上 A, B, ~ Z ,AAの場合処理がない
 キー入力項目をどうやって作ろうかな？
-リファクタリング（大事）
 date欲しくなった
 */
 
 
-
 function main() {
   // GAの結果が詰まってるスプレッドシートのキーを入力させる
-  // var key = getSpreadSheetKey();
-  var key = "1-J3Z************************************"; // 仮置き
+  var key = "1no****************************"; // 仮置き
 
   // シートの情報取ってくる系
   try{
@@ -109,7 +106,7 @@ function getDataQuery(key, dataRange, sheetLength, times) {
   for (var i = 0; i < sheetLength; i++) {
     sheetRow = string.slice(i, i + 1);
     dataRow = string.slice(dataRange[1] + times - 1, dataRange[1] + times);
-    query = '=IMPORTRANGE("' + key + '", ' + sheetRow +'2&"!' + dataRow + (dataRange[0] + 5) + ':' + dataRow + (dataRange[0] + dataRange[2] + 5) + '")';
+    query = '=IMPORTRANGE("' + key + '", ' + sheetRow +'2&"!' + dataRow + (dataRange[0] + 5) + ':' + dataRow + (dataRange[0] + dataRange[2]) + '")';
     result.push(query);
   }
   
