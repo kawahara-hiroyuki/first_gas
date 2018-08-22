@@ -11,7 +11,7 @@ date欲しくなった
 function main() {
   // GAの結果が詰まってるスプレッドシートのキーを入力させる
   // var key = getSpreadSheetKey();
-  var key = "1-J3Z************************************"; // 仮置き
+  var key = "1_eB0qwydVETZYTodKoWWX5ctKrH_ZK1idzuFgCuWXNg"; // 仮置き
 
   // シートの情報取ってくる系
   try{

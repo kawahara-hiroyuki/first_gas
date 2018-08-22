@@ -1,6 +1,8 @@
 // 挿入するデータの始まりのの日付
 // 下記は2016/11/01 00:00:00.000を指定している
-var firstDate = new Date(2016, 10, 1, 0, 0, 00);
+// ライブラリの挿入が必要ですよ
+// Momentのライブラリkey = MHMchiX6c1bwSqGM1PZiW_PxhMjh3Sh48
+var firstDate = Moment.moment('2016/11/1');
 
 function insertDateLine() {
   var currentSheet = SpreadsheetApp.getActiveSpreadsheet();    
@@ -11,7 +13,7 @@ function insertDateLine() {
   
   var dateArr =  getDate(currentSheet, sheetNames);
   
-//  setDateArr(dateArr, currentSheet, sheetNames);
+  setDateArr(dateArr, currentSheet, sheetNames);
 }
 
 function setDateArr(dateArr, currentSheet, sheetNames) {
@@ -40,15 +42,12 @@ function getDate(currentSheet, sheetNames) {
   var date = firstDate;
   var dateRow = [];
   var lastRow = currentSheet.getSheetByName(sheetNames[0]).getLastRow();
-
+  
   var temp;
   for (var i = 0; i < lastRow; i++) {
-    temp = [date.toString()];
-    dateRow.push(temp);
-    date.setDate(date.getDate() + 1);  
+    dateRow.push([date.clone().add(i, 'd').format('YYYY/M/D')]);
   }
-    
-  Logger.log(dateRow[lastRow-1]);
+
   return dateRow;
 }
 
